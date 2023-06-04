@@ -111,3 +111,16 @@ Key can be added using `ssh-add ~/.ssh/id_ed25519`
 ![[Attachments/21.png]]
 
 It will add two files. The default name will be id_ed25519 which is the private key and id_ed25519.pub which is the public key which needs to be added to Github. The contents of the file need to be added to our github ssh keys list. Follow the steps in the above url. Once done, we can push our local directory to the repo.
+
+Now our code can be pushed to github using the below commands.
+
+```shell
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin git@github.com:profile_Name/Obsidian_Vault.git
+git push -u origin main
+```
+
+![[Attachments/22.png]]
