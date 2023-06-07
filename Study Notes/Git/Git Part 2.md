@@ -9,6 +9,8 @@ We can then track them using the `add` command. To add a file to the stating are
 
 We can unstage files from the index using `git reset HEAD -- file1` command. It can also be done using  `git rm -r --cached file1`. The -r means recursively so any file present in the folder (if specified instead of file1) will be removed. The --cached means it will be removed from the index only.
 
+HEAD is a pointer to the last commit ([[#Committing changes|more on commits below]]) currently in git in that branch ([[#Branching|more on branches below]]).
+
 ![[Attachments/7.png|600]]
 
 ![[Attachments/8.png]]
@@ -21,9 +23,11 @@ Simply entering `git restore file1` will replace the file even in the working di
 
 `git restore --source=HEAD~1 file1` will take the file from a specified commit. This is useful if we accidentally delete a file and commit it and then want to recover it.
 
+Unstaging can also be done using `git reset` or `git reset fileName` which will just unstage the staged files.
+
 # Committing changes
 
-To commit staged changes, we can use `git commit -m "commit message"` command. -m stands for message. Sometimes, we might need to add additional details to the commit we are making. To do that, simply typing `git commit` will open the editor that we configured. There, we can type the commit message followed by the longer description. 
+To commit staged changes, we can use `git commit -m "commit message"` command. -m stands for message. Sometimes, we might need to add additional details to the commit we are making. To do that, simply typing `git commit` will open the editor that we configured. There, we can type the commit message followed by the longer description.  This can also be done using `git commit -m "commit message" -m 'description here'`.
 
 ![[Attachments/9.png]]
 
@@ -36,6 +40,11 @@ It is not advisable to commit for every small change but it is recommended to co
 The staging area can be skipped using `git commit -a -m "commit message"` but this is also not recommended. The -a stands for all.
 
 A file can directly be removed from the project directory and the staging area using `git rm file1.txt` command.
+
+Commits can be reverted using `git reset HEAD~1` which means point the HEAD at one commit before the current one. So the last commit will be uncommitted and unstaged. We can do `git reset 0ft4sn5s` which will go back to the specified commit.
+
+To completely discard all the changes from even the local repo after a certain commit, we can use the command `git reset --hard 0ft4sn5s`.
+
 
 # Renaming, ignoring and viewing files
 
@@ -75,8 +84,6 @@ We can view the history of commits we made in the repo using the `git log` comma
 
 ![[Attachments/17.png]]
 
-HEAD is a reference to the current branch we are working on and our current branch is 'master' (more on branches below).
-
 `git log --oneline` will show us a short summary of the commits made.
 ![[Attachments/18.png]]
 
@@ -105,7 +112,7 @@ To do that, we first need a github account. Once created, we have to provide aut
 
 Once the key is generated, we need to add it to our ssh agent. To start the ssh agent, use `eval "$(ssh-agent -s)"`. This can also be set to start automatically whenever gitbash is opened. To do so, refer to the below.
 
-#Reference  https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh
+#reference  https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh
 
 Key can be added using `ssh-add ~/.ssh/id_ed25519`
 ![[Attachments/21.png]]
@@ -124,3 +131,29 @@ git push -u origin main
 ```
 
 ![[Attachments/22.png]]
+
+Origin is is the location of our file in the repo. Using `remote add origin` we are specifying the location of our repo. `remote` means not local. So essentially, we are adding an origin that is not local. In the next command, `push -u origin main`, we are pushing the changes to the origin's main branch. -m means message and -M lets us rename our master branch to main that we have already created in our local repo. `-u` means upstream. We are setting up the default upstream with this command. So next time, we can just use `git push` instead of specifying that we are pushing to origin and to what branch which would be `git push origin main`.
+
+The command `git remove -v` lists any remote repo that we have connected to our local repo.
+
+# Branching
+
+When we create a repo, all our code will be in a single branch called 'master' or 'main'. Suppose we want to add some code but not have it affect our main branch till we are ready, we would split off and create a new branch, say 'features'.
+
+![[Attachments/23.png|600]]
+
+When we are ready, for example when all the bugs in the new features are fixed, we can 'merge' it with the main branch. This is especially useful when multiple people are working on the same project.
+
+A new branch can be created using the  command `git checkout -b feature-branch`. The checkout command is usually used to switch between branches but it can also be used to create new branches by including -b. All the branches can be listed using `git branch -v`.
+
+![[Attachments/24.png]]
+
+Once we have made changes to the new branch, we can switch to the main branch and typing `git diff feature-branch` will show us all the differences between the two branches.
+
+We can directly merge the changes using `git merge feature-branch` while we are in the main branch but usually, it is done by pushing the new branch to the remote repo and then raising a PR or pull request. A pull request means we want to pull the feature-branch into the main branch. When a PR is raised, anyone can review our code, comment on it or ask to make changes. Even after raising the PR, we can still make changes to the code by committing and pushing them.
+
+Git PRs can be done via cmd but it is complicated and best done using the remote repo interface like Github. #lookupmore #skippable 
+
+Usually, once the PR is completed and the code is merged, we should delete the new branch and whenever a new change needs to be made (for example a new feature), a new branch can be created. To delete the branch, use the command `git branch -d feature-branch`.
+
+Suppose we have we have two branches br1 and br2 and two people are working on them. Now br1 merges the change in master first. Now when br2 tries to merge their change, they will get a merge conflict. Merge conflicts will occur when attempts to make changes to the same file happen. This has to be resolved manually.
