@@ -1,4 +1,3 @@
-
 # Staging and unstaging files
 
 When new files are added to the workflow, they are not automatically *tracked* by git. We have to add them to the staging area so that they are tracked. To know which files are tracked, we can use `git status` command.
@@ -45,7 +44,6 @@ Commits can be reverted using `git reset HEAD~1` which means point the HEAD at o
 
 To completely discard all the changes from even the local repo after a certain commit, we can use the command `git reset --hard 0ft4sn5s`.
 
-
 # Renaming, ignoring and viewing files
 
 If we rename a file, git will think the original file was removed and a new one was added. So we have to stage them both again. Once we do so, git will recognize that the file has been renamed. In the below example, file.txt was renamed to main.js
@@ -56,11 +54,11 @@ Alternatively, the file can directly be renamed in git using the `git mv file1.t
 
 A *.gitignore* file can be created in the project directory and all the file names that should never be tracked should be added to this file. When this file is committed, the file names mentioned in it will not be tracked by git.
 
-github.com/gitignore has a list of common files to be excluded in each programming language.
+[Gitignore list](https://github.com/github/gitignore) has a list of common files to be excluded in each programming language.
 
 `git status -s` gives us a short summary of the files.
 
-##### Comparing file #skippable
+### Comparing files #skippable
 
 ![[Attachments/12.png]]
 
@@ -112,7 +110,7 @@ To do that, we first need a github account. Once created, we have to provide aut
 
 Once the key is generated, we need to add it to our ssh agent. To start the ssh agent, use `eval "$(ssh-agent -s)"`. This can also be set to start automatically whenever gitbash is opened. To do so, refer to the below.
 
-#reference  https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh
+#reference  [Github setup and about ssh](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh)
 
 Key can be added using `ssh-add ~/.ssh/id_ed25519`
 ![[Attachments/21.png]]
@@ -134,7 +132,7 @@ git push -u origin main
 
 Origin is is the location of our file in the repo. Using `remote add origin` we are specifying the location of our repo. `remote` means not local. So essentially, we are adding an origin that is not local. In the next command, `push -u origin main`, we are pushing the changes to the origin's main branch. -m means message and -M lets us rename our master branch to main that we have already created in our local repo. `-u` means upstream. We are setting up the default upstream with this command. So next time, we can just use `git push` instead of specifying that we are pushing to origin and to what branch which would be `git push origin main`.
 
-The command `git remove -v` lists any remote repo that we have connected to our local repo.
+The command `git remote -v` lists any remote repo that we have connected to our local repo.
 
 # Branching
 
