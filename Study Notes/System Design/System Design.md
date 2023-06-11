@@ -1,0 +1,94 @@
+# What is system design?
+
+System design is the process of defining an architecture for a software system, which could be a news feed, Google search, chat system, etc.
+
+# Basic setup
+
+Let us consider a single server setup.
+
+![[Attachments/image.png]]
+
+* Web server is where our application is hosted. It contains the HTML pages or backend code.
+* Domain names are how the user accesses the website.
+* DNS stands for ==**Domain Name Systems**==. They are paid services provided by third parties. Web servers are accessible via IP (Internet Protocol) addresses. A DNS provides a human readable name (domain) to the user. For example, www.google.com will have an IP address which will be given to the user when the web browser contacts the DNS.
+* ==**Hypertext Transfer Protocol**== (HTTP) requests are sent to the web server from the web browser after obtaining the IP address.
+
+The basic flow is as follows
+1. User types in a url in the browser. The browser contacts the DNS for the IP address of the url.
+2. Browser now directly sends the HTTP request to the IP address of the web server where the application is hosted.
+3. The application processes the requests and sends back a HTML page or a JSON response.
+
+Traffic to web servers come from two sources.
+Web applications use a combination of server side languages (Java, Python, etc.) to handle business logic, storage, etc., and client side languages (HTML, Javascript) to present the data
+Mobile applications use HTTP protocols for communication and commonly uses ==**JavaScript Object Notation**== (JSON) as the response format.
+
+As the application grows, we use two servers and use them for different purposes. We setup one server to handle the web/mobile traffic (web tier) and one for the database (data tier). The web tier handles the business logic and processing of data, the data tier is responsible for actually storing the data in the database.
+
+![[Attachments/image-1.png]]
+
+### Database types
+
+There are two types of databases- ==**Relational (SQL) and Non-relational (NoSQL)**==.
+Relational databases or ==Relational Database Management System (RDMBS)== are the traditional databases (like MySQL, Oracle database, etc.) where data is stored in rows and columns in tables. Join operations can be performed across the tables.
+Non-relational databases (like Cassandra, Amazon DynamoDB) do not generally support joins across tables. Data is stored in four categories: key-value stores, graph stores, column stores, and document stores.
+
+Non-relational databases are preferred if:
+* The application requires super-low latency.
+* our data are unstructured, or you do not have any relational data.
+* You only need to serialize and deserialize data (JSON, XML, YAML, etc.).
+* You need to store a massive amount of data.
+
+## Scaling
+
+As our application grows and the number of users increase, the traffic and data will also increase. Our web server will not be able to handle all that load. To enable smooth running of the application, we need to scale it. There are two types.
+
+### Vertical scaling
+Vertical scaling aka scale-up means the process of adding more power (CPU, RAM, etc.). This is good when traffic is low. It has two main disadvantages.
+1. Memory and CPU cannot be increased after a certain point in a single server.
+2. There is no failover and redundancy. If the server goes down, the application goes down with it.
+
+### Horizontal scaling
+Horizontal scaling aka scale-out means adding more servers. For large scale applications, this is preferred. The advantage if one server goes down, the entire application does not go down. If many users access the website simultaneously, the webserver will reach it's load limit and the user will experience slowness or fail to connect entirely. Having multiple servers help mitigate this problem. This is done using load balancer.
+
+#### Load balancer
+
+A load balancer evenly distributes incoming traffic among webservers where the applications are hosted.
+
+![[Attachments/image-2.png]]
+
+When a load balancer is setup, the DNS provides the IP address of the load balancer for the application. This IP is known as the public IP which is given to the user. With this setup, the webservers can not be reached by the client directly. The load balancer contains the private IP of the web servers. A private IP is an IP address reachable only between servers in the same network; however, it is unreachable over the internet. The load balancer communicates with web servers through private IPs.
+
+With this setup, the failover issue is solved.
+* If server 1 goes down, the load balancer redirects all traffic to server 2.
+* If the traffic is high, more number of web servers need to be added to the web server pool. This way, the load balancer can distribute the high traffic between the servers.
+
+#### Database replication
+
+Although failover for the webserver is handled via a load balancer, the same cannot be said for the database. To handle it, database replication has to be done.
+
+Essentially, data is replicated across multiple databases with a master/slave or leader/follower relationship.
+
+![[Attachments/image-3.png]]
+
+A master database generally only supports write operations. A slave database gets copies of
+the data from the master database and only supports read operations. All the data-modifying
+commands like insert, delete, or update must be sent to the master database. Most applications have a higher number of reads compared to writes. So the number of slave databases is usually higher than the master.
+
+This setup has a few advantages:
+* Better performance: Since the write operations happen in master DB and the read operations are done across multiple slave DBs, more queries can be processed in parallel.
+* Reliability: If one DB is destroyed, the data is still preserved as the other DBs are stored across multiple locations.
+* High availability: If one DB goes down, the application does not go gown.
+
+If there is only one slave DB and it goes down, the master temporarily takes over the read operations until the slave is restored. If there are multiple slaves, the queries are redirected to the healthy slave DBs.
+
+If the master goes down, one of the slave DBs is promoted to master temporarily and a new slave DB will replace the old one for data replication immediately. Promotion from slave to master is complex in production systems as the data is the slave DB might not be up to date with that of the master. The missing data needs to be updated by running data recovery scripts. #lookupmore 
+
+![[Attachments/image-4.png]]
+
+>[!summary]
+> * A user gets the IP address of the load balancer from DNS.
+> * A user connects the load balancer with the public IP address.
+> * The HTTP request is routed to either Server 1 or Server 2.
+> * A web server reads user data from a slave database.
+> * A web server routes any data-modifying operations to the master database. This includes write, update, and delete operations.
+
