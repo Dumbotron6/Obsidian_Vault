@@ -92,3 +92,38 @@ If the master goes down, one of the slave DBs is promoted to master temporarily 
 > * A web server reads user data from a slave database.
 > * A web server routes any data-modifying operations to the master database. This includes write, update, and delete operations.
 
+## Caching
+
+A cache is a temporary storage area that stores the result of expensive responses or frequently
+accessed data in memory so that subsequent requests are served more quickly. If an application access the database frequently, the performance is affected.
+
+A *cache tier* is a temporary data store layer. When the web server needs data, it checks the cache first. If the data exists there, it is returned to the web server. If data does not exist, the database is accessed to fetch the data and returned to the web server and also added to the cache. This caching strategy is called *read-through cache*. There are other strategies. #lookupmore 
+
+### Considerations
+
+* Data that is read frequently but modified infrequently needs to be stored in cache. Cache data is stored in volatile memory ([[../Quick lookup#Volatile memory|^]]) so it is not recommended to store persistent data ([[../Quick lookup#Persistent data|^]]). It the server restarts, all data in the cache is lost.
+* Expiration policy: Expiration date needs to be set for the data that is stored in cache. This will help in obsolete data being stored in cache.
+* Consistency: This involves keeping the data store and the cache in sync. Inconsistency can happen because data-modifying operations on the data store and cache are not in a single transaction.
+* Failures: Multiple cache servers across different data centers are recommended to avoid single point of failure or SPOF ([[../Quick lookup#Single Pont of Failure or SPOF|^]]).
+* Eviction Policy: Once the cache is full, any requests to add items to the cache might cause existing items to be removed. This is called cache eviction. Least-recently-used (LRU) is the most popular cache eviction policy. Other eviction policies, such as the Least Frequently Used (LFU) or First in First Out (FIFO), can be adopted to satisfy different use cases.
+
+## Content delivery network (CDN)
+
+A CDN is a network of geological locations that is used to store and deliver static content such as HTML, JavaScript, etc. CDN servers cache static data.
+Dynamic content caching is also possible. #lookupmore 
+
+When a user visits a website, a CDN server closest to the user will deliver static content. The farther away the user is from the CDN, the slower the website will load. Similar to cache, if the data is not present in the CDN, it requests it from the origin i.e., the web server. The data includes which includes optional HTTP header *Time-to-Live (TTL)* which describes how long the image is cached.
+
+### Considerations
+
+* CDNs are run by third-party providers, and you are charged for data transfers in and out of the CDN.
+* Cache expiry: The cache expiry time should neither be too long nor too short. If it is too long, the content might no longer be fresh. If it is too short, it can cause repeat reloading of content from origin servers to the CDN.
+*  CDN fallback: If there is a temporary CDN outage, clients should be able to detect the problem and request resources from the origin.
+*  Invalidating files: You can remove a file from the CDN before it expires by performing one of the following operations:
+	* Invalidate the CDN object using APIs provided by CDN vendors.
+	* Use object versioning to serve a different version of the object. To version an object, you can add a parameter to the URL, such as a version number. For example, version number 2 is added to the query string: image.png?v=2.
+
+>[!todo] Advantages
+>1. Static assets (JS, CSS, images, etc.,) are no longer served by web servers. They are
+fetched from the CDN for better performance.
+>2. The database load is lightened by caching data.
