@@ -6,3 +6,11 @@ Data that needs to be stored. It is usually inserted into a database.
 
 ###### Single Pont of Failure or SPOF
 A single point of failure (SPOF) is a part of a system that, if it fails, will stop the entire system from working.
+
+###### Tightly and Loosely coupled or Decoupled
+When systems are tightly coupled, one is highly dependent on the other. When one is modified or scaled, it cannot be done so without doing the same to the other.
+When systems are loosely coupled or decoupled, the systems can operate independent of each other. Failure of one does not lead to failure of the other. They can be independently modified or scaled.
+
+###### Synchronous and Asynchronous
+Synchronous means in sequence. For example, the second operation cannot be done without completing the first.
+Asynchronous means in parallel. For example, the second operation does not wait for the first to complete. The second starts regardless of the state of the first.

@@ -6,7 +6,7 @@ System design is the process of defining an architecture for a software system, 
 
 Let us consider a single server setup.
 
-![[Attachments/image.png]]
+![[Attachments/image_1.png]]
 
 * Web server is where our application is hosted. It contains the HTML pages or backend code.
 * Domain names are how the user accesses the website.
@@ -24,7 +24,7 @@ Mobile applications use HTTP protocols for communication and commonly uses ==**J
 
 As the application grows, we use two servers and use them for different purposes. We setup one server to handle the web/mobile traffic (web tier) and one for the database (data tier). The web tier handles the business logic and processing of data, the data tier is responsible for actually storing the data in the database.
 
-![[Attachments/image-1.png]]
+![[Attachments/image_2.png]]
 
 ### Database types
 
@@ -54,7 +54,7 @@ Horizontal scaling aka scale-out means adding more servers. For large scale appl
 
 A load balancer evenly distributes incoming traffic among webservers where the applications are hosted.
 
-![[Attachments/image-2.png]]
+![[Attachments/image_3.png]]
 
 When a load balancer is setup, the DNS provides the IP address of the load balancer for the application. This IP is known as the public IP which is given to the user. With this setup, the webservers can not be reached by the client directly. The load balancer contains the private IP of the web servers. A private IP is an IP address reachable only between servers in the same network; however, it is unreachable over the internet. The load balancer communicates with web servers through private IPs.
 
@@ -68,11 +68,9 @@ Although failover for the webserver is handled via a load balancer, the same can
 
 Essentially, data is replicated across multiple databases with a master/slave or leader/follower relationship.
 
-![[Attachments/image-3.png]]
+![[Attachments/image_4.png]]
 
-A master database generally only supports write operations. A slave database gets copies of
-the data from the master database and only supports read operations. All the data-modifying
-commands like insert, delete, or update must be sent to the master database. Most applications have a higher number of reads compared to writes. So the number of slave databases is usually higher than the master.
+A master database generally only supports write operations. A slave database gets copies of the data from the master database and only supports read operations. All the data-modifying commands like insert, delete, or update must be sent to the master database. Most applications have a higher number of reads compared to writes. So the number of slave databases is usually higher than the master.
 
 This setup has a few advantages:
 * Better performance: Since the write operations happen in master DB and the read operations are done across multiple slave DBs, more queries can be processed in parallel.
@@ -83,7 +81,7 @@ If there is only one slave DB and it goes down, the master temporarily takes ove
 
 If the master goes down, one of the slave DBs is promoted to master temporarily and a new slave DB will replace the old one for data replication immediately. Promotion from slave to master is complex in production systems as the data is the slave DB might not be up to date with that of the master. The missing data needs to be updated by running data recovery scripts. #lookupmore 
 
-![[Attachments/image-4.png]]
+![[Attachments/image_5.png]]
 
 >[!summary]
 > * A user gets the IP address of the load balancer from DNS.
@@ -94,8 +92,7 @@ If the master goes down, one of the slave DBs is promoted to master temporarily 
 
 ## Caching
 
-A cache is a temporary storage area that stores the result of expensive responses or frequently
-accessed data in memory so that subsequent requests are served more quickly. If an application access the database frequently, the performance is affected.
+A cache is a temporary storage area that stores the result of expensive responses or frequently accessed data in memory so that subsequent requests are served more quickly. If an application access the database frequently, the performance is affected.
 
 A *cache tier* is a temporary data store layer. When the web server needs data, it checks the cache first. If the data exists there, it is returned to the web server. If data does not exist, the database is accessed to fetch the data and returned to the web server and also added to the cache. This caching strategy is called *read-through cache*. There are other strategies. #lookupmore 
 
@@ -127,3 +124,43 @@ When a user visits a website, a CDN server closest to the user will deliver stat
 >1. Static assets (JS, CSS, images, etc.,) are no longer served by web servers. They are
 fetched from the CDN for better performance.
 >2. The database load is lightened by caching data.
+
+## Stateless architecture #lookupmore 
+
+#reference [Stateful vs Stateless](https://www.spiceworks.com/tech/cloud/articles/stateful-vs-stateless/)
+
+### Stateful
+
+Stateful architecture or application describes a structure that allows users to store, record, and return to already established information and processes over the internet. It entails transactions that are performed using past transactions as a reference point. In stateful applications, the current transaction can be affected by the previous ones.
+It is like a conversation where the next dialogue can be built upon the previous.
+
+A stateful architecture maintains the state of every session. Here, the state (such as session data) is stored in the web tier. So each user state is stored in only one server. If the client sends a request to another server, it will fail. Adding or removing servers becomes an issue here.
+
+![[Attachments/image_6.png]]
+
+### Stateless
+
+In this stateless architecture, HTTP requests from users can be sent to any web servers, which fetch state data from a shared data store (which will be a persistent data store). State data is stored in a shared data store and kept out of web servers. A stateless system is simpler, more robust, and scalable. NoSQL databases are commonly used for this purpose as it is easy to scale.
+
+![[Attachments/image_7.png]]
+
+After the state data is removed out of web servers, auto-scaling of the web tier is easily achieved by adding or removing servers based on traffic load.
+
+![[Attachments/image_8.png]]
+
+## Data centers
+
+As a website grows and the number of users increase, high availability is important. For this purpose, data centers are needed. Data centers are geographically separated areas with clusters of webservers.
+
+When a request is sent from the client, the request is geoDNS-routed, also known as geo-routed, to the closest data center. geoDNS is a DNS service that allows domain names to be resolved to IP addresses based on the location of a user.
+
+There are several important points to keep in mind.
+* Traffic redirection: GeoDNS can be used to direct traffic to the nearest data center depending on where a user is located.
+* Data synchronization: Users from different regions could use different local databases or caches. In failover cases, traffic might be routed to a data center where data is unavailable. A common strategy is to replicate data across multiple data centers.
+* Test and deployment: With multi-data center setup, it is important to test your website/application at different locations. Automated deployment tools are vital to keep services consistent through all the data centers
+
+>[!important]
+>With so many components in place, it is important that we decouple([[../Quick lookup#Tightly and Loosely coupled or Decoupled|^]]) them out of the system so that they can be scaled independently.
+
+## Message queue
+
