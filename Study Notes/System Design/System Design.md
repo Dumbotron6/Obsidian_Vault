@@ -164,3 +164,64 @@ There are several important points to keep in mind.
 
 ## Message queue
 
+A message queue is a component that supports decoupling components of a system. It supports asynchronous communication.
+
+It works in the basis of a Publisher-Subscriber (or pub-sub model). Input services, called producers/publishers, create messages, and publish them to a message queue. Other services or servers, called consumers/subscribers, connect (or subscribe) to the queue, and perform actions  defined by (or consume) the messages.
+
+![[Attachments/image_9.png]]
+
+The producer can post a message to the queue when the consumer is unavailable to process it. The consumer can read messages from the queue even when the producer is unavailable. With this approach, both the producer and consumer can be scaled independently.
+
+Kafka is a messaging queue system.
+
+## Logging, metrics, automation
+
+* Logging: Monitoring error logs is important because it helps to identify errors and problems in the system. You can monitor error logs at per server level or use tools (like splunk log observer) to aggregate them to a centralized service for easy search and viewing.
+* Metrics: Collecting different types of metrics help us to gain business insights and understand the health status of the system. Some of the following metrics are useful:
+	* Host level metrics: CPU, Memory, disk I/O, etc.
+	* Aggregated level metrics: for example, the performance of the entire database tier, cache tier, etc.
+	* Key business metrics: daily active users, retention, revenue, etc.
+* Automation: When a system gets big and complex, we need to build or leverage automation tools to improve productivity. Continuous integration is a good practice, in which each code check-in is verified through automation (like sonar, fortify), allowing teams to detect problems early. Automating your build, test, deploy process, etc. could improve developer productivity significantly.
+
+![[Attachments/image_10.png]]
+
+## Database scaling
+
+As the application grows larger, the data in our databases also increase. So our database needs to be scaled ([[#Scaling|see above]]).
+
+### Vertical scaling
+
+Vertical scaling, also known as scaling up, is the scaling by adding more power (CPU, RAM, DISK, etc.) to an existing machine. However, there are hardware limits and if there is a huge number of users, a single server is not enough. Chances of a single point of failure ([[../Quick lookup#Single Pont of Failure or SPOF|^]]) are also high. Cost of vertical scaling is high.
+
+### Horizontal scaling or Sharding
+
+Horizontal scaling, also known as sharding ([[../Quick lookup#Database sharding|^]]), is the practice of adding more servers.
+
+Sharding separates large databases into smaller, more easily managed parts called shards. Each shard shares the same schema, though the actual data on each shard is unique to the shard. Data is allocated to a database server based on unique IDs. Anytime you store or access data, a hash function is used to find the corresponding shard. For example, if the has function used is user_id%4,
+
+![[Attachments/image_11.png]]
+![[Attachments/image_12.png]]
+
+The rest would be stored in shards 2 and 3.
+
+The choice of the sharding key (aka partitioning key) is very important in a sharding strategy. It consists of one or more columns that determine how data is distributed. It allows us to route queries to the correct database. The sharding key must evenly distribute data among the shards.
+
+>[!warning] Issues with sharding
+>
+>* **Resharding data**: Certain shards might experience shard exhaustion faster than others due to uneven data distribution or rapid data growth. When shard exhaustion happens, it requires updating the sharding function and moving data around. Consistent hashing ( #linklater ) is one common solution to this.
+>* **Celebrity problem**: This is also called a hotspot key problem. Excessive access to a specific shard could cause server overload. The shard will be overwhelmed with read operations. To solve this problem, we may need to allocate a shard for each celebrity (the ID being accessed). Each shard might even require further partition.
+>* **Join and de-normalization**: Once a database has been sharded across multiple servers, it is hard to perform join operations across database shards. A common workaround is to de-normalize the database so that queries can be performed in a single table. #lookupmore 
+
+Some of the non-relational functionalities are moved to a NoSQL data store to reduce the database load.
+
+![[Attachments/image_13.png]]
+
+>[!summary] Overall summary to scale system
+>* Keep web tier stateless
+>* Build redundancy at every tier
+>* Cache data as much as you can
+>* Support multiple data centers
+>* Host static assets in CDN
+>* Scale your data tier by sharding
+>* Split tiers into individual services
+>* Monitor your system and use automation tools

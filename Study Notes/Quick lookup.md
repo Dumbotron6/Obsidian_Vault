@@ -14,3 +14,6 @@ When systems are loosely coupled or decoupled, the systems can operate independe
 ###### Synchronous and Asynchronous
 Synchronous means in sequence. For example, the second operation cannot be done without completing the first.
 Asynchronous means in parallel. For example, the second operation does not wait for the first to complete. The second starts regardless of the state of the first.
+
+###### Database sharding
+Sharding is the process of splitting data into serveral shards in the database. Each shard has its own unique data stored using unique id, for example employee id. A hash function (for example employee_id % 4) is used to determine which shard to store the data in.
