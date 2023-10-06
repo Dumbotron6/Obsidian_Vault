@@ -56,3 +56,9 @@ An alternate approach would be to create a copy of the array and flag non zero n
 >
 Here, we are marking all the positions of numbers that are available. To do so, we are multiplying the element in that position by -1. So if number 5 is available, we are marking the element in position 5 as -ve. So we know the number 5 is available in array. Whichever number is not available, that position will be left positive. So we know which position’s numbers are unavailable. We are following the flagging approach here.
 
+In the below problem, there is a more simpler approach than the one you did. It involves reversing the array which is also the top solution. If k is the number by which the array needs to be rotated,
+1. Reverse the entire array
+2. Reverse again from 0 to k
+3. Reverse the rest from k to n
+So when k is 2, \[1,2,3,4,5] becomes \[5,4,3,2,1] and then \[4,5,3,2,1] and then \[4,5,1,2,3].
+[Rotate array](https://leetcode.com/explore/learn/card/array-and-string/204/conclusion/1182/)
