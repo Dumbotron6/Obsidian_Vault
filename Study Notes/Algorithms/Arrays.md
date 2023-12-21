@@ -35,7 +35,7 @@ In the below problem, an alternate approach would be to create a hashTable of al
 
 # In place algorithms
 
-Writing an algorithm in place means writing an algorithm that does not add any extra space to the program. If we write an algorithm to sort an array without modifying its size or creating a new temporary array to hold elements, then we add now new space. So space complexity remains the same. For example, a program to square every number in an array does not need any extra space. It can be done in place. Though, in place algorithms modifying the original elements in the data structure.
+Writing an algorithm in place means writing an algorithm that does not add any extra space to the program. If we write an algorithm to sort an array without modifying its size or creating a new temporary array to hold elements, then we add no new space. So space complexity remains the same. For example, a program to square every number in an array does not need any extra space. It can be done in place. Though, in place algorithms modifying the original elements in the data structure.
 
 >[!todo]
 #Redo You found alternate and simpler approach suggested in hint.
