@@ -237,3 +237,96 @@ This can also be solved via recursion. Look at solution to understand recursion 
 >         }
 >     }
 > ```
+
+---
+Below is an easy problem. Took too long to solve. Mistake was, instead of creating a new pointer to append to, you kept trying to use existing two nodes(list1 and list2) to make it point to the next node. It's okay to use additional pointer, in this case being 'temp'. For some reason, it didn't work without 'last' pointer even though it seems unnecessary. #LinkedList 
+[Merge two sorted linked list](https://leetcode.com/explore/learn/card/linked-list/213/conclusion/1227/)
+
+> [!NOTE]- Solution
+> ```java
+>     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+>         if(list1 == null)
+>             return list2;
+>         if(list2 == null)
+>             return list1;
+>         
+>         ListNode head, temp, last;
+>         if(list1.val > list2.val) {
+>             head = temp = last = list2;
+>         }else {
+>             head = temp = last = list1;
+>         }
+>         
+>         while(list1 != null && list2 != null) {
+>             if(list1.val > list2.val) { //list2 smaller
+>                 last = list2.next;
+>                 temp.next = list2; 
+>                 list2 = last;
+>             }else{  //list1 smaller or equal
+>                 last = list1.next;
+>                 temp.next = list1;
+>                 list1 = last;
+>             }
+>             temp = temp.next;
+>         }
+>         if(list1 == null && list2 != null)
+>             temp.next = list2;
+>         else
+>             temp.next = list1;
+>         
+>         return head;
+>     }
+> ```
+
+> [!NOTE]- Initial approach
+> ```java
+>     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+>         if(list1 == null)
+>             return list2;
+>         if(list2 == null)
+>             return list1;
+>         
+>         ListNode head, temp;
+>         if(list1.val > list2.val) {
+>             head = temp = list2;
+>         }else {
+>             head = temp = list1;
+>         }
+>         
+>         while(list1 != null && list2 != null) {
+>             if(list1.val > list2.val) {
+>                 if(list2.next != null && list2.val != list2.next.val) {
+>                     temp = list2.next;
+>                     list2.next = list1;
+>                     list1 = temp;
+>                     list2 = list2.next;
+>                 }else {
+>                     temp = list2;
+>                     list2 = list2.next;
+>                 }
+>             }else{
+>                 if(list1.next != null && list1.val != list1.next.val) {
+>                     temp = list1.next;
+>                     list1.next = list2;
+>                     list2 = temp;
+>                     list1 = list1.next;
+>                 }else {
+>                     temp = list1;
+>                     list1 = list1.next;
+>                 }
+>             }
+>         }
+>         if(list1 == null && list2 != null)
+>             temp.next = list2;
+>         else
+>             temp.next = list1;
+>         
+>         return head;
+>     }
+> ```
+
+---
+The below problem is similar to Rotate Array problem in description but the approach is much different. In rotate a linked list, it's important to remember that if an array or a linked list needs to be rotated by 2, the head will become position 2 from the end. So if the size is 5, the head will become 2nd from end, which is 4. \[1,2,3,4,5] becomes \[4,5,1,2,3]. #LinkedList 
+[Rotate List](https://leetcode.com/explore/learn/card/linked-list/213/conclusion/1295/)
+
+---
