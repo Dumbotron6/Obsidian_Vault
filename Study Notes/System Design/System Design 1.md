@@ -6,11 +6,11 @@ System design is the process of defining an architecture for a software system, 
 
 Let us consider a single server setup.
 
-![[Attachments/image_1.png]]
+![[Attachments/System Design.webp]]
 
 * Web server is where our application is hosted. It contains the HTML pages or backend code.
 * Domain names are how the user accesses the website.
-* DNS stands for ==**Domain Name Systems**==. They are paid services provided by third parties. Web servers are accessible via IP (Internet Protocol) addresses. A DNS provides a human readable name (domain) to the user. For example, www.google.com will have an IP address which will be given to the user when the web browser contacts the DNS.
+* DNS stands for ==**Domain Name Systems**==. They are paid services provided by third parties. Web servers are accessible via IP (Internet Protocol) addresses. A DNS provides a human readable name (domain) to the user. For example, www.google.com will have an ==**Internet Protocol (IP) address**== which will be given to the user when the web browser contacts the DNS.
 * ==**Hypertext Transfer Protocol**== (HTTP) requests are sent to the web server from the web browser after obtaining the IP address.
 
 The basic flow is as follows
@@ -19,12 +19,12 @@ The basic flow is as follows
 3. The application processes the requests and sends back a HTML page or a JSON response.
 
 Traffic to web servers come from two sources.
-Web applications use a combination of server side languages (Java, Python, etc.) to handle business logic, storage, etc., and client side languages (HTML, Javascript) to present the data
-Mobile applications use HTTP protocols for communication and commonly uses ==**JavaScript Object Notation**== (JSON) as the response format.
+1. Web applications use a combination of server side languages (Java, Python, etc.) to handle business logic, storage, etc., and client side languages (HTML, Javascript) to present the data.
+2. Mobile applications use HTTP protocols for communication between mobile app and the web server and commonly uses ==**JavaScript Object Notation**== (JSON) as the response format for the API.
 
 As the application grows, we use two servers and use them for different purposes. We setup one server to handle the web/mobile traffic (web tier) and one for the database (data tier). The web tier handles the business logic and processing of data, the data tier is responsible for actually storing the data in the database.
 
-![[Attachments/image_2.png]]
+![[Attachments/System Design-1.webp]]
 
 ### Database types
 
@@ -34,7 +34,7 @@ Non-relational databases (like Cassandra, Amazon DynamoDB) do not generally supp
 
 Non-relational databases are preferred if:
 * The application requires super-low latency.
-* our data are unstructured, or you do not have any relational data.
+* Your data are unstructured, or you do not have any relational data.
 * You only need to serialize and deserialize data (JSON, XML, YAML, etc.).
 * You need to store a massive amount of data.
 
@@ -54,7 +54,7 @@ Horizontal scaling aka scale-out means adding more servers. For large scale appl
 
 A load balancer evenly distributes incoming traffic among webservers where the applications are hosted.
 
-![[Attachments/image_3.png]]
+![[Attachments/System Design-2.webp]]
 
 When a load balancer is setup, the DNS provides the IP address of the load balancer for the application. This IP is known as the public IP which is given to the user. With this setup, the webservers can not be reached by the client directly. The load balancer contains the private IP of the web servers. A private IP is an IP address reachable only between servers in the same network; however, it is unreachable over the internet. The load balancer communicates with web servers through private IPs.
 
@@ -68,7 +68,7 @@ Although failover for the webserver is handled via a load balancer, the same can
 
 Essentially, data is replicated across multiple databases with a master/slave or leader/follower relationship.
 
-![[Attachments/image_4.png]]
+![[Attachments/System Design-3.webp]]
 
 A master database generally only supports write operations. A slave database gets copies of the data from the master database and only supports read operations. All the data-modifying commands like insert, delete, or update must be sent to the master database. Most applications have a higher number of reads compared to writes. So the number of slave databases is usually higher than the master.
 
@@ -81,7 +81,7 @@ If there is only one slave DB and it goes down, the master temporarily takes ove
 
 If the master goes down, one of the slave DBs is promoted to master temporarily and a new slave DB will replace the old one for data replication immediately. Promotion from slave to master is complex in production systems as the data is the slave DB might not be up to date with that of the master. The missing data needs to be updated by running data recovery scripts. #lookupmore 
 
-![[Attachments/image_5.png]]
+![[Attachments/System Design-4.webp]]
 
 >[!summary]
 > * A user gets the IP address of the load balancer from DNS.
@@ -98,10 +98,10 @@ A *cache tier* is a temporary data store layer. When the web server needs data, 
 
 ### Considerations
 
-* Data that is read frequently but modified infrequently needs to be stored in cache. Cache data is stored in volatile memory ([[../Quick lookup#Volatile memory|^]]) so it is not recommended to store persistent data ([[../Quick lookup#Persistent data|^]]). It the server restarts, all data in the cache is lost.
-* Expiration policy: Expiration date needs to be set for the data that is stored in cache. This will help in obsolete data being stored in cache.
+* Data that is read frequently but modified infrequently needs to be stored in cache. Cache data is stored in volatile memory ([[../Quick lookup#Volatile memory|more]]) so it is not recommended to store persistent data ([[../Quick lookup#Persistent data|more]]). It the server restarts, all data in the cache is lost.
+* Expiration policy: Expiration date needs to be set for the data that is stored in cache. This will help in obsolete data being deleted from cache.
 * Consistency: This involves keeping the data store and the cache in sync. Inconsistency can happen because data-modifying operations on the data store and cache are not in a single transaction.
-* Failures: Multiple cache servers across different data centers are recommended to avoid single point of failure or SPOF ([[../Quick lookup#Single Pont of Failure or SPOF|^]]).
+* Failures: Multiple cache servers across different data centers are recommended to avoid single point of failure or SPOF ([[../Quick lookup#Single Pont of Failure or SPOF|more]]).
 * Eviction Policy: Once the cache is full, any requests to add items to the cache might cause existing items to be removed. This is called cache eviction. Least-recently-used (LRU) is the most popular cache eviction policy. Other eviction policies, such as the Least Frequently Used (LFU) or First in First Out (FIFO), can be adopted to satisfy different use cases.
 
 ## Content delivery network (CDN)
@@ -136,17 +136,17 @@ It is like a conversation where the next dialogue can be built upon the previous
 
 A stateful architecture maintains the state of every session. Here, the state (such as session data) is stored in the web tier. So each user state is stored in only one server. If the client sends a request to another server, it will fail. Adding or removing servers becomes an issue here.
 
-![[Attachments/image_6.png]]
+![[Attachments/System Design-5.webp]]
 
 ### Stateless
 
 In this stateless architecture, HTTP requests from users can be sent to any web servers, which fetch state data from a shared data store (which will be a persistent data store). State data is stored in a shared data store and kept out of web servers. A stateless system is simpler, more robust, and scalable. NoSQL databases are commonly used for this purpose as it is easy to scale.
 
-![[Attachments/image_7.png]]
+![[Attachments/System Design-6.webp]]
 
 After the state data is removed out of web servers, auto-scaling of the web tier is easily achieved by adding or removing servers based on traffic load.
 
-![[Attachments/image_8.png]]
+![[Attachments/System Design-7.webp]]
 
 ## Data centers
 
@@ -160,7 +160,7 @@ There are several important points to keep in mind.
 * Test and deployment: With multi-data center setup, it is important to test your website/application at different locations. Automated deployment tools are vital to keep services consistent through all the data centers
 
 >[!important]
->With so many components in place, it is important that we decouple([[../Quick lookup#Tightly and Loosely coupled or Decoupled|^]]) them out of the system so that they can be scaled independently.
+>With so many components in place, it is important that we decouple([[../Quick lookup#Tightly and Loosely coupled or Decoupled|more]]) them out of the system so that they can be scaled independently.
 
 ## Message queue
 
@@ -168,7 +168,7 @@ A message queue is a component that supports decoupling components of a system. 
 
 It works in the basis of a Publisher-Subscriber (or pub-sub model). Input services, called producers/publishers, create messages, and publish them to a message queue. Other services or servers, called consumers/subscribers, connect (or subscribe) to the queue, and perform actions  defined by (or consume) the messages.
 
-![[Attachments/image_9.png]]
+![[Attachments/System Design-8.webp]]
 
 The producer can post a message to the queue when the consumer is unavailable to process it. The consumer can read messages from the queue even when the producer is unavailable. With this approach, both the producer and consumer can be scaled independently.
 
@@ -183,7 +183,7 @@ Kafka is a messaging queue system.
 	* Key business metrics: daily active users, retention, revenue, etc.
 * Automation: When a system gets big and complex, we need to build or leverage automation tools to improve productivity. Continuous integration is a good practice, in which each code check-in is verified through automation (like sonar, fortify), allowing teams to detect problems early. Automating your build, test, deploy process, etc. could improve developer productivity significantly.
 
-![[Attachments/image_10.png]]
+![[Attachments/System Design-9.webp]]
 
 ## Database scaling
 
@@ -191,16 +191,16 @@ As the application grows larger, the data in our databases also increase. So our
 
 ### Vertical scaling
 
-Vertical scaling, also known as scaling up, is the scaling by adding more power (CPU, RAM, DISK, etc.) to an existing machine. However, there are hardware limits and if there is a huge number of users, a single server is not enough. Chances of a single point of failure ([[../Quick lookup#Single Pont of Failure or SPOF|^]]) are also high. Cost of vertical scaling is high.
+Vertical scaling, also known as scaling up, is the scaling by adding more power (CPU, RAM, DISK, etc.) to an existing machine. However, there are hardware limits and if there is a huge number of users, a single server is not enough. Chances of a single point of failure ([[../Quick lookup#Single Pont of Failure or SPOF|more]]) are also high. Cost of vertical scaling is high.
 
 ### Horizontal scaling or Sharding
 
-Horizontal scaling, also known as sharding ([[../Quick lookup#Database sharding|^]]), is the practice of adding more servers.
+Horizontal scaling, also known as sharding ([[../Quick lookup#Database sharding|more]]), is the practice of adding more servers.
 
 Sharding separates large databases into smaller, more easily managed parts called shards. Each shard shares the same schema, though the actual data on each shard is unique to the shard. Data is allocated to a database server based on unique IDs. Anytime you store or access data, a hash function is used to find the corresponding shard. For example, if the has function used is user_id%4,
 
-![[Attachments/image_11.png]]
-![[Attachments/image_12.png]]
+![[Attachments/System Design-10.webp]]
+![[Attachments/System Design-11.webp]]
 
 The rest would be stored in shards 2 and 3.
 
@@ -214,7 +214,7 @@ The choice of the sharding key (aka partitioning key) is very important in a sha
 
 Some of the non-relational functionalities are moved to a NoSQL data store to reduce the database load.
 
-![[Attachments/image_13.png]]
+![[Attachments/System Design-12.webp]]
 
 >[!summary] Overall summary to scale system
 >* Keep web tier stateless
@@ -225,3 +225,21 @@ Some of the non-relational functionalities are moved to a NoSQL data store to re
 >* Scale your data tier by sharding
 >* Split tiers into individual services
 >* Monitor your system and use automation tools
+
+# Additional Observations
+Seeing as there are multiple levels of routing from the time a client accesses a website to data processing in the server, the flow is described below.
+
+1. Client connects to the DNS with the user readable URL.
+2. DNS returns the IP of the nearest CDN to the client.
+3. CDN returns cached data. If data is not present, it connects to the nearest Data Center to obtain the required data.
+	1. The CDN uses something called **==Global Server Load Balancing(GSLB)==** ([[../Quick lookup#Global Server Load Balancing(GSLB)|more]]) to identify the nearest healthy DC and connects to it to retrieve data.
+	2. This is the first level of load balancing.
+4. The DC has it's own load balancer, used to identify a healthy and light-loaded (free) webserver, to process the request. This is the second level of load balancing.
+5. The webserver connects to the database (after identifying the correct shard), retrieves data, and returns it to the client.
+
+> [!Important] Key Distinction
+> DNS uses GeoDNS to return nearest CDN. It is controlled by the DNS. GSLB is used by the CDN to return nearest healthy DC. It is controlled by us.
+
+![[System Design-13.webp]]
+
+In this image, it is important to note that the CDN is what connects to the Load balancer (actually GSLB) to route to DCs.

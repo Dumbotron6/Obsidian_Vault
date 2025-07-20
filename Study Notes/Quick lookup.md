@@ -19,6 +19,12 @@ Asynchronous means in parallel. For example, the second operation does not wait 
 ###### Database sharding
 Sharding is the process of splitting data into several shards in the database. Each shard has its own unique data stored using unique id, for example employee id. A hash function (for example employee_id % 4) is used to determine which shard to store the data in.
 
+###### GeoDNS
+GeoDNS is a technology that is an implementation of DNS. It is used to identify geographically nearest CDN.
+
+###### Global Server Load Balancing(GSLB)
+It is a type of Load Balancer that operates at the DNS level. It distributes traffic between geographically separate data centers. It's different from a regular load balancer, which distributes traffic within a single data center to various web servers. GSLB is a more advanced superset of GeoDNS. GSLB considers server health and performance in addition to just geography.
+
 ## Algorithms
 ##### Two pointers, In place algorithm, Counter or Flagging
 [[Algorithms/Arrays#Two pointer approach|Two pointers]]
