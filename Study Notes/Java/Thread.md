@@ -73,7 +73,7 @@ The Thread class is used to create and control threads in Java. Each object of t
 > [!EXAMPLE]- Example. Click to expand.
 > ``` java
 > // Thread class implementation
-class ThreadImpl extends Thread{
+>class ThreadImpl extends Thread{
 >     
 >     @Override
 >     public void run(){
