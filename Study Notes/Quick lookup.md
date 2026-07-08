@@ -32,3 +32,21 @@ It is a type of Load Balancer that operates at the DNS level. It distributes tra
 [[Algorithms/Arrays#Counters or Flagging approach|Flagging]]
 ##### Fast and slow pointers
 In a cyclic linked list, two pointers can be used, with one moving faster than the other (ex. `first=first.next; second=second.next.next;`). In a cyclic linked list, the fast pointer will eventually and always catch up to the slow pointer.
+
+## Java
+##### Thread scheduler
+When you run a program with multiple threads (tasks running at the same time), they all want CPU time to execute. However, a CPU can only do so much at once. The **Thread Scheduler** is the part of the Java Virtual Machine (JVM) that decides _which_ thread gets to run at any given moment and _how long_ it gets to run. It handles state transitions and order of execution.
+
+###### 1. Which Thread to Run? (Priority & Preemption)
+Every thread in Java has a **priority**, which is a number typically ranging from 1 (lowest) to 10 (highest). By default, a thread inherits the priority of the thread that created it.
+
+- **The Rule:** The scheduler will almost always prefer to give CPU time to the thread with the **highest priority** that is ready to run.
+- **Preemption:** If a low-priority thread is currently running, and a high-priority thread suddenly becomes ready (for example, it wakes up from a nap), the scheduler will often **kick out** the low-priority thread immediately to let the high-priority one run.
+
+###### 2. How Long Does It Run? (Time Slicing)
+What happens if there are five threads that all have the exact same priority? They all want to run, and they are all equally important.
+
+To handle this, the scheduler uses a mechanism called **Time Slicing** (or Round-Robin scheduling).
+
+- **The Rule:** The scheduler divides CPU time into tiny fractions of a second, called **timeslices** or **quanta** (often just a few milliseconds).
+- It gives Thread A one timeslice, then forces it to pause. Then it gives Thread B a timeslice, pauses it, gives Thread C a timeslice, and so on. It cycles through them so rapidly that to you, the human watching the screen, it looks like all the tasks are running at the exact same time.
