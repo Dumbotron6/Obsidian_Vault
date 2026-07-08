@@ -4,7 +4,7 @@
 
 The code and leetcode suggested code work but this approach doesn’t look for first match. It first looks in middle, then left, then right.
 
->[!note]- Code
+>[!NOTE]- Code
 > ```java
 > class Solution {
 > 	public int pivotIndex(int[] nums) {

@@ -1,7 +1,7 @@
 In the below problem, the solution could have been more efficient. In Roman numbers, if at anytime a lower number comes before a higher number, subtract it. No need to check for combinations(This was done in the submitted solution). #HashTable
 [Roman to Integer](https://leetcode.com/problems/roman-to-integer/description/)
 
->[!note]- Efficient solution
+>[!NOTE]- Efficient solution
 > ```java
 >     int res = 0;
 > 	int prev = 0;
@@ -22,7 +22,7 @@ In the below problem, the solution could have been more efficient. In Roman numb
 For the below problem, stack approach is correct. Only change would be to not use inbuilt LinkedList. Not exactly an improvement. #Stack
 [Valid parentheses](https://leetcode.com/problems/valid-parentheses/description/?source=submission-ac)
 
->[!tip] Tip
+>[!TIP] Tip
 >Check all edge cases before submitting. Two submissions were wasted because edge cases were not tested.
 
 ---
@@ -196,7 +196,7 @@ This problem is a bit tricky. The first(brute) approach is to use a Hashmap to k
 
 ---
 
->[!tip] Linked List tip
+>[!TIP] Linked List tip
 >One observation for any linkedlist solution is, if for any reason, the first element has to be removed, (example would be below problem, remove elements), create a dummy node and make dummy.next the head. If the head has to be removed, the dummy.next would then point to head.next. Repeat subsequent elements. So now, when we need to return head after solving the problem, we can return dummy.next.
 
 [Remove Linked List Elements](https://leetcode.com/explore/learn/card/linked-list/219/classic-problems/1207/) #LinkedList 

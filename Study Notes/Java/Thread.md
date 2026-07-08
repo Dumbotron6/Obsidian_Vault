@@ -9,7 +9,7 @@ We can create threads in java using two ways:
 
 Implementing Runnable is preferred. Because `Runnable` is just a task, you can instantiate it **once** and pass that single instance into multiple different threads. This is incredibly useful when you want multiple threads to work on or modify the same exact data. We can set names to threads using the constructor and calling `super(name)` or using `setname(name)`.
 
-> [!example]- Explanation with example. Click to expand.
+> [!EXAMPLE]- Explanation with example. Click to expand.
 > ```java
 > class TicketCounter implements Runnable {
 >     private int availableTickets = 5; // Shared resource
@@ -70,7 +70,7 @@ The Thread class is used to create and control threads in Java. Each object of t
 - **start() Method:** Launches a new thread and internally calls run() concurrently. We use start() to launch a new thread, which then calls the run() method in parallel. If we call run() directly, it works like a normal method call and no new thread is created.
 
 
-> [!example]- Example. Click to expand.
+> [!EXAMPLE]- Example. Click to expand.
 > ``` java
 > // Thread class implementation
 class ThreadImpl extends Thread{
@@ -220,10 +220,10 @@ During its thread life cycle, a Java thread transitions through several states f
 > ![[Thread-2.webp]]
 > 
 
-> [!summary]- Illustration of moving to TIMED_WAITING. Click to expand.
+> [!SUMMARY]- Illustration of moving to TIMED_WAITING. Click to expand.
 > ![[Thread-1.webp]]
 
-> [!important]
+> [!IMPORTANT]
 > In the above example, `mainThread` waits till `bookingThread` is completed to resume execution. That is what `bookingThread.join()` does. It tells the caller thread `mainThread` to wait till `bookingThread` execution is completed.
 
 > [!NOTE]
@@ -241,7 +241,7 @@ In simple terms: it is waiting for another thread to finish using a `synchronize
     
 - **How it exits `BLOCKED`**: When Thread B exits the `synchronized` block and releases the lock, the OS/JVM picks a blocked thread (like Thread A) and moves it back to the `RUNNABLE` state so it can try to grab the lock.
 
-> [!example]- Example for synchronized method. Click to expand.
+> [!EXAMPLE]- Example for synchronized method. Click to expand.
 > ```java
 > public class BlockedExample {
 >     public synchronized static void syncMethod() {
@@ -266,7 +266,7 @@ In simple terms: it is waiting for another thread to finish using a `synchronize
 > }
 > ```
 
-> [!example]- Example for synchronized code block. Click to expand.
+> [!EXAMPLE]- Example for synchronized code block. Click to expand.
 > ```java
 > class BankAccount {
 >     private int balance = 100;
@@ -343,7 +343,7 @@ try {
 | **Trigger Methods** | Attempting to enter a `synchronized` block/method.                  | Calling `Object.wait()`, `Thread.join()`, or `LockSupport.park()`.                                     |
 | **How it wakes up** | Automatically moves to `RUNNABLE` as soon as the lock becomes free. | Requires another thread to explicitly call `notify()`, `notifyAll()`, or for the joined thread to die. |
 
-> [!example]- Code example. Click to expand.
+> [!EXAMPLE]- Code example. Click to expand.
 > ```java
 > public class CoffeeShopExample {
 >     // The shared lock and condition flag
@@ -405,7 +405,7 @@ try {
 - **The Wake-Up Call:** The barista executes `counter.notify()`. This tells the JVM: _"Hey, wake up one thread that is waiting on this counter object."_ 
 - **The Handoff:** The `customer` thread wakes up, transitions from `WAITING` back to `RUNNABLE`, waits for the barista to finish the synchronized block to re-acquire the lock, and successfully finishes its execution.
 
-> [!important]
+> [!IMPORTANT]
 > In Java, a thread **is not allowed** to make another thread wait or wake up unless it currently owns the lock for that specific object. So both the `customer` and `barista` share the same lock, `counter`.
 > 
 > If you try to call `wait()` or `notify()` on an object without being inside a `synchronized` block for that _exact_ object, Java will instantly throw an `IllegalMonitorStateException` and crash the thread.
@@ -462,12 +462,12 @@ If the Consumer had called **`vault.notifyAll()`** instead:
 4. Producer 2 immediately grabs the released lock, checks its loop condition, realizes 1 item _will_ fit, deposits its item, and safely exits the block.
 
 
-> [!summary] Summary: When to use `notifyAll()`
+> [!SUMMARY] Summary: When to use `notifyAll()`
 >
 > - Use `notify()` **only** if all waiting threads are doing the exact same thing (e.g., a pool of identical workers waiting for identical tasks) and a signal can be safely handled by _any_ single thread.
 > - Use `notifyAll()` if your waiting threads have **different conditions** or purposes, ensuring that the thread actually capable of making progress gets the chance to run.
 
-> [!example]- Code. Click to expand.
+> [!EXAMPLE]- Code. Click to expand.
 > ```java
 > import java.util.ArrayList;
 > import java.util.List;
@@ -600,7 +600,7 @@ Virtual threads represent a paradigm shift in how concurrency is handled, most n
 - **How it works:** Virtual threads are managed entirely by the JVM, not the OS. They are incredibly lightweight, taking up only a few hundred bytes on the heap rather than a megabyte of contiguous RAM.
 - **The Magic of Unmounting:** When a virtual thread makes a blocking call (like fetching data from Apache Cassandra or an external microservice), the JVM does not block the underlying carrier thread. Instead, it "unmounts" the virtual thread, saving its state to the heap. The carrier thread is instantly freed up to execute a completely different virtual thread. Once the I/O response returns, the original virtual thread is placed back in a queue to be remounted and resume execution.
 
-> [!summary]
+> [!SUMMARY]
 > 
 > | **Feature**          | **Computer (OS) Threads**           | **Platform Threads**                | **Virtual Threads**                      |
 > | -------------------- | ----------------------------------- | ----------------------------------- | ---------------------------------------- |

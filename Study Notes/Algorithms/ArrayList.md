@@ -13,20 +13,20 @@ The below problem was solved but took too long and code is also long. Look at di
 Below problem was solved but took an absurdly long time (3 days). Go through discuss section for efficient solution. Analyze own code for unclear code. It is a medium level problem.
 [Sprial matrix](https://leetcode.com/explore/learn/card/array-and-string/202/introduction-to-2d-array/1168/)
 
->[!note]
+>[!NOTE]
 >On above two problems, it is important to keep note of the direction of movement using flags.
 
 ---
 Below problem has more efficient solution in the discuss/solutions submitted by others. Note that we can include if condition inside loops instead of three different loops.
 [Add binary](https://leetcode.com/explore/learn/card/array-and-string/203/introduction-to-string/1160/)
 
->[!tip]
+>[!TIP]
 >Key takeaway in the above problem's solution submitted by others is, string values can be subtracted. "1"-"0" gives 1. Here, the ascii values are subtracted.
 
 In below problem, the takeaway is in the first loop. The iterations can be reduced by considering size of both strings.
 [Index of substring](https://leetcode.com/explore/learn/card/array-and-string/203/introduction-to-string/1161/)
 
->[!tip]
+>[!TIP]
 >In finding the substring in the above problem, the substring can come after the first discovery of the 0th element - in the middle of the substring being traversed. Ex. "issip" in "missississipi". In this case, even though 4 is crossed, we have to look again from 4 and then 7 will be crossed, check again from 7.
 
 ---
@@ -147,7 +147,7 @@ For the below problem, you found a solution but it was sub optimal. The approach
 > }
 > ```
 
->[!tip]
+>[!TIP]
 >The sum was found from sum(i-n). There was no need to calculate again from sum((i+1)-n). We could have simply done sum(i-n) - val(i). This was the redundant part.
 
 ---

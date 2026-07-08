@@ -65,7 +65,7 @@ The Young Generation is actually divided into **Eden**, **Survivor 0 (S0)**, and
 - **The Survivor Ping-Pong:** On the next Minor GC, the JVM looks at Eden _and_ S0. It copies all surviving objects into **Survivor Space 1 (S1)**. S0 and Eden are wiped. On the next cycle, it copies from S1 back to S0.
 - **Tenuring (Promotion):** Every time an object survives a ping-pong cycle, its "age" increments. Once it hits a threshold (usually 15 cycles), the JVM decides this object is long-lived and moves it to the **Old Generation**.
 
-> [!important]
+> [!IMPORTANT]
 > When an object is copied from Eden to Survivor Space 0 (S0), **its physical memory address changes entirely**. Consequently, the JVM must track down every single variable, field, and array in your application that was pointing to the old address and update them to point to the new address. The surviving objects are moved to S0, remaining objects in Eden are not deleted, rather the pointer that tells JVM where free space is available simple moves to the beginning, and the objects left in Eden are simply overridden when a new object is created.
 
 #### 4. Stop-The-World (STW) Pauses

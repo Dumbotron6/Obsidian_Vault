@@ -83,7 +83,7 @@ If the master goes down, one of the slave DBs is promoted to master temporarily 
 
 ![[Attachments/System Design-4.webp]]
 
->[!summary]
+>[!SUMMARY]
 > * A user gets the IP address of the load balancer from DNS.
 > * A user connects the load balancer with the public IP address.
 > * The HTTP request is routed to either Server 1 or Server 2.
@@ -120,7 +120,7 @@ When a user visits a website, a CDN server closest to the user will deliver stat
 	* Invalidate the CDN object using APIs provided by CDN vendors.
 	* Use object versioning to serve a different version of the object. To version an object, you can add a parameter to the URL, such as a version number. For example, version number 2 is added to the query string: image.png?v=2.
 
->[!todo] Advantages
+>[!TODO] Advantages
 >1. Static assets (JS, CSS, images, etc.,) are no longer served by web servers. They are
 fetched from the CDN for better performance.
 >2. The database load is lightened by caching data.
@@ -159,7 +159,7 @@ There are several important points to keep in mind.
 * Data synchronization: Users from different regions could use different local databases or caches. In failover cases, traffic might be routed to a data center where data is unavailable. A common strategy is to replicate data across multiple data centers.
 * Test and deployment: With multi-data center setup, it is important to test your website/application at different locations. Automated deployment tools are vital to keep services consistent through all the data centers
 
->[!important]
+>[!IMPORTANT]
 >With so many components in place, it is important that we decouple([[../Quick lookup#Tightly and Loosely coupled or Decoupled|more]]) them out of the system so that they can be scaled independently.
 
 ## Message queue
@@ -216,7 +216,7 @@ Some of the non-relational functionalities are moved to a NoSQL data store to re
 
 ![[Attachments/System Design-12.webp]]
 
->[!summary] Overall summary to scale system
+>[!SUMMARY] Overall summary to scale system
 >* Keep web tier stateless
 >* Build redundancy at every tier
 >* Cache data as much as you can
@@ -237,7 +237,7 @@ Seeing as there are multiple levels of routing from the time a client accesses a
 4. The DC has it's own load balancer, used to identify a healthy and light-loaded (free) webserver, to process the request. This is the second level of load balancing.
 5. The webserver connects to the database (after identifying the correct shard), retrieves data, and returns it to the client.
 
-> [!Important] Key Distinction
+> [!IMPORTANT] Key Distinction
 > DNS uses GeoDNS to return nearest CDN. It is controlled by the DNS. GSLB is used by the CDN to return nearest healthy DC. It is controlled by us.
 
 ![[System Design-13.webp]]

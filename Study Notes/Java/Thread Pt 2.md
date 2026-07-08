@@ -18,7 +18,7 @@ Common concurrency problems arise when multiple threads access shared resources 
 * **Deadlock:** A deadlock occurs when two or more threads are waiting for each other to release resources, causing all of them to be stuck forever.
 	* ***Solution:*** Always get the locks in the same order in every thread. This way, threads won’t block each other.
 
-> [!example]- Example. Click to expand.
+> [!EXAMPLE]- Example. Click to expand.
 > ```java
 > class GFG {
 >     private final Object lock1 = new Object();
@@ -62,7 +62,7 @@ Common concurrency problems arise when multiple threads access shared resources 
 	* Thread may cache a running variable, so changes made to it may not be immediately visible.
 	* Use volatile keyword to ensure visibility: `private volatile boolean running = true;`. This ensures that changes to running are immediately visible to all threads.
 
-> [!example]- Example. Click to expand.
+> [!EXAMPLE]- Example. Click to expand.
 > ```java
 > class GFG {
 >     
@@ -135,7 +135,7 @@ The volatile keyword in Java is used to ensure that changes made to a variable a
 - Ensures visibility of shared variables across threads by preventing caching issues.
 - Does not provide atomicity, so it is not suitable for operations like increment (count++).
 
-> [!example]- Example with explanation. Click to expand.
+> [!EXAMPLE]- Example with explanation. Click to expand.
 > ```java
 > class SharedData {
 >     volatile boolean flag = false;
@@ -206,7 +206,7 @@ Daemon threads are background threads that provide support services to user thre
 - Created using setDaemon(true) method
 - A thread inherits the daemon status of the thread that creates it.
 
-> [!example]- Example. Click to expand.
+> [!EXAMPLE]- Example. Click to expand.
 > ```java
 > class DaemonThreadExample extends Thread{
 >     
